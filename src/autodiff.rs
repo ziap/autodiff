@@ -30,12 +30,12 @@ impl Differentiable for Const {
 
 /// Adding 2 expressions
 #[derive(Clone, Copy)]
-pub struct AddOp<T1: Differentiable + Copy, T2: Differentiable + Copy> {
+pub struct AddOp<T1: Differentiable, T2: Differentiable> {
     lhs: T1,
     rhs: T2,
 }
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for AddOp<T1, T2> {
+impl<T1: Differentiable, T2: Differentiable> Differentiable for AddOp<T1, T2> {
     // f(x) = u + v, f'(x) = u' + v'
     fn eval(self, input: f32) -> (f32, f32) {
         let (u, du) = self.lhs.eval(input);
@@ -47,12 +47,12 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for Ad
 
 /// Substracting 2 expressions
 #[derive(Clone, Copy)]
-pub struct SubOp<T1: Differentiable + Copy, T2: Differentiable + Copy> {
+pub struct SubOp<T1: Differentiable, T2: Differentiable> {
     lhs: T1,
     rhs: T2,
 }
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for SubOp<T1, T2> {
+impl<T1: Differentiable, T2: Differentiable> Differentiable for SubOp<T1, T2> {
     fn eval(self, input: f32) -> (f32, f32) {
         let (u, du) = self.lhs.eval(input);
         let (v, dv) = self.rhs.eval(input);
@@ -63,11 +63,11 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for Su
 
 /// Negating an expression
 #[derive(Clone, Copy)]
-pub struct NegOp<T: Differentiable + Copy> {
+pub struct NegOp<T: Differentiable> {
     expr: T,
 }
 
-impl<T: Differentiable + Copy> Differentiable for NegOp<T> {
+impl<T: Differentiable> Differentiable for NegOp<T> {
     fn eval(self, input: f32) -> (f32, f32) {
         let (y, dy) = self.expr.eval(input);
 
@@ -77,12 +77,12 @@ impl<T: Differentiable + Copy> Differentiable for NegOp<T> {
 
 /// Multiplying 2 expressions
 #[derive(Clone, Copy)]
-pub struct MulOp<T1: Differentiable + Copy, T2: Differentiable + Copy> {
+pub struct MulOp<T1: Differentiable, T2: Differentiable> {
     lhs: T1,
     rhs: T2,
 }
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for MulOp<T1, T2> {
+impl<T1: Differentiable, T2: Differentiable> Differentiable for MulOp<T1, T2> {
     // f(x) = uv, f'(x) = uv' + vu'
     fn eval(self, input: f32) -> (f32, f32) {
         let (u, du) = self.lhs.eval(input);
@@ -94,12 +94,12 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for Mu
 
 /// Dividing 2 expressions
 #[derive(Clone, Copy)]
-pub struct DivOp<T1: Differentiable + Copy, T2: Differentiable + Copy> {
+pub struct DivOp<T1: Differentiable, T2: Differentiable> {
     lhs: T1,
     rhs: T2,
 }
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for DivOp<T1, T2> {
+impl<T1: Differentiable, T2: Differentiable> Differentiable for DivOp<T1, T2> {
     // f(x) = u/v, f'(x) = (u'v - v'u) / v^2
     fn eval(self, input: f32) -> (f32, f32) {
         let (u, du) = self.lhs.eval(input);
@@ -111,12 +111,12 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Differentiable for Di
 
 // Power
 #[derive(Clone, Copy)]
-pub struct PowOp<T: Differentiable + Copy> {
+pub struct PowOp<T: Differentiable> {
     expr: T,
     order: f32
 }
 
-impl<T: Differentiable + Copy> Differentiable for PowOp<T> {
+impl<T: Differentiable> Differentiable for PowOp<T> {
     // f(x) = u^n, f'(x) = u'nu^(n - 1)
     fn eval(self, input: f32) -> (f32, f32) {
         let (y, dy) = self.expr.eval(input);
@@ -127,11 +127,11 @@ impl<T: Differentiable + Copy> Differentiable for PowOp<T> {
 
 // Exponentation
 #[derive(Clone, Copy)]
-pub struct ExpOp<T: Differentiable + Copy> {
+pub struct ExpOp<T: Differentiable> {
     expr: T,
 }
 
-impl<T: Differentiable + Copy> Differentiable for ExpOp<T> {
+impl<T: Differentiable> Differentiable for ExpOp<T> {
     // f(x) = e^u, f'(x) = u'e^u
     fn eval(self, input: f32) -> (f32, f32) {
         let (y, dy) = self.expr.eval(input);
@@ -143,11 +143,11 @@ impl<T: Differentiable + Copy> Differentiable for ExpOp<T> {
 
 // Trigonometry
 #[derive(Clone, Copy)]
-pub struct SinOp<T: Differentiable + Copy> {
+pub struct SinOp<T: Differentiable> {
     expr: T,
 }
 
-impl<T: Differentiable + Copy> Differentiable for SinOp<T> {
+impl<T: Differentiable> Differentiable for SinOp<T> {
     // f(x) = sin(u), f'(x) = u'cos(u)
     fn eval(self, input: f32) -> (f32, f32) {
         let (y, dy) = self.expr.eval(input);
@@ -158,11 +158,11 @@ impl<T: Differentiable + Copy> Differentiable for SinOp<T> {
 }
 
 #[derive(Clone, Copy)]
-pub struct CosOp<T: Differentiable + Copy> {
+pub struct CosOp<T: Differentiable> {
     expr: T,
 }
 
-impl<T: Differentiable + Copy> Differentiable for CosOp<T> {
+impl<T: Differentiable> Differentiable for CosOp<T> {
     // f(x) = sin(u), f'(x) = u'cos(u)
     fn eval(self, input: f32) -> (f32, f32) {
         let (y, dy) = self.expr.eval(input);
@@ -174,11 +174,11 @@ impl<T: Differentiable + Copy> Differentiable for CosOp<T> {
 
 // Logarithm
 #[derive(Clone, Copy)]
-pub struct LnOp<T: Differentiable + Copy> {
+pub struct LnOp<T: Differentiable> {
     expr: T,
 }
 
-impl<T: Differentiable + Copy> Differentiable for LnOp<T> {
+impl<T: Differentiable> Differentiable for LnOp<T> {
     // f(x) = ln(u), f'(x) = u'/u
     fn eval(self, input: f32) -> (f32, f32) {
         let (y, dy) = self.expr.eval(input);
@@ -193,7 +193,7 @@ pub struct Expression<T> {
     expr: T,
 }
 
-impl<T: Differentiable + Copy> Differentiable for Expression<T> {
+impl<T: Differentiable> Differentiable for Expression<T> {
     fn eval(self, input: f32) -> (f32, f32) {
         self.expr.eval(input)
     }
@@ -201,7 +201,7 @@ impl<T: Differentiable + Copy> Differentiable for Expression<T> {
 
 // Addition operator overloading
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Add<Expression<T2>> for Expression<T1> {
+impl<T1: Differentiable, T2: Differentiable> Add<Expression<T2>> for Expression<T1> {
     type Output = Expression<AddOp<T1, T2>>;
 
     fn add(self, rhs: Expression<T2>) -> Self::Output {
@@ -214,7 +214,7 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Add<Expression<T2>> f
     }
 }
 
-impl<T: Differentiable + Copy> Add<f32> for Expression<T> {
+impl<T: Differentiable> Add<f32> for Expression<T> {
     type Output = Expression<AddOp<T, Const>>;
 
     fn add(self, rhs: f32) -> Self::Output {
@@ -227,7 +227,7 @@ impl<T: Differentiable + Copy> Add<f32> for Expression<T> {
     }
 }
 
-impl<T: Differentiable + Copy> Add<Expression<T>> for f32 {
+impl<T: Differentiable> Add<Expression<T>> for f32 {
     type Output = Expression<AddOp<Const, T>>;
 
     fn add(self, rhs: Expression<T>) -> Self::Output {
@@ -242,7 +242,7 @@ impl<T: Differentiable + Copy> Add<Expression<T>> for f32 {
 
 // Multiplication operator overloading
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Mul<Expression<T2>> for Expression<T1> {
+impl<T1: Differentiable, T2: Differentiable> Mul<Expression<T2>> for Expression<T1> {
     type Output = Expression<MulOp<T1, T2>>;
 
     fn mul(self, rhs: Expression<T2>) -> Self::Output {
@@ -255,7 +255,7 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Mul<Expression<T2>> f
     }
 }
 
-impl<T: Differentiable + Copy> Mul<f32> for Expression<T> {
+impl<T: Differentiable> Mul<f32> for Expression<T> {
     type Output = Expression<MulOp<T, Const>>;
 
     fn mul(self, rhs: f32) -> Self::Output {
@@ -268,7 +268,7 @@ impl<T: Differentiable + Copy> Mul<f32> for Expression<T> {
     }
 }
 
-impl<T: Differentiable + Copy> Mul<Expression<T>> for f32 {
+impl<T: Differentiable> Mul<Expression<T>> for f32 {
     type Output = Expression<MulOp<Const, T>>;
 
     fn mul(self, rhs: Expression<T>) -> Self::Output {
@@ -283,7 +283,7 @@ impl<T: Differentiable + Copy> Mul<Expression<T>> for f32 {
 
 // Substraction operator overloading
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Sub<Expression<T2>> for Expression<T1> {
+impl<T1: Differentiable, T2: Differentiable> Sub<Expression<T2>> for Expression<T1> {
     type Output = Expression<SubOp<T1, T2>>;
 
     fn sub(self, rhs: Expression<T2>) -> Self::Output {
@@ -296,7 +296,7 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Sub<Expression<T2>> f
     }
 }
 
-impl<T: Differentiable + Copy> Sub<f32> for Expression<T> {
+impl<T: Differentiable> Sub<f32> for Expression<T> {
     type Output = Expression<SubOp<T, Const>>;
 
     fn sub(self, rhs: f32) -> Self::Output {
@@ -309,7 +309,7 @@ impl<T: Differentiable + Copy> Sub<f32> for Expression<T> {
     }
 }
 
-impl<T: Differentiable + Copy> Sub<Expression<T>> for f32 {
+impl<T: Differentiable> Sub<Expression<T>> for f32 {
     type Output = Expression<SubOp<Const, T>>;
 
     fn sub(self, rhs: Expression<T>) -> Self::Output {
@@ -324,7 +324,7 @@ impl<T: Differentiable + Copy> Sub<Expression<T>> for f32 {
 
 // Negation operator overloading
 
-impl<T: Differentiable + Copy> Neg for Expression<T> {
+impl<T: Differentiable> Neg for Expression<T> {
     type Output = Expression<NegOp<T>>;
 
     fn neg(self) -> Self::Output {
@@ -336,7 +336,7 @@ impl<T: Differentiable + Copy> Neg for Expression<T> {
 
 // Division operator overloading
 
-impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Div<Expression<T2>> for Expression<T1> {
+impl<T1: Differentiable, T2: Differentiable> Div<Expression<T2>> for Expression<T1> {
     type Output = Expression<DivOp<T1, T2>>;
 
     fn div(self, rhs: Expression<T2>) -> Self::Output {
@@ -349,7 +349,7 @@ impl<T1: Differentiable + Copy, T2: Differentiable + Copy> Div<Expression<T2>> f
     }
 }
 
-impl<T: Differentiable + Copy> Div<f32> for Expression<T> {
+impl<T: Differentiable> Div<f32> for Expression<T> {
     type Output = Expression<DivOp<T, Const>>;
 
     fn div(self, rhs: f32) -> Self::Output {
@@ -362,7 +362,7 @@ impl<T: Differentiable + Copy> Div<f32> for Expression<T> {
     }
 }
 
-impl<T: Differentiable + Copy> Div<Expression<T>> for f32 {
+impl<T: Differentiable> Div<Expression<T>> for f32 {
     type Output = Expression<DivOp<Const, T>>;
 
     fn div(self, rhs: Expression<T>) -> Self::Output {
@@ -375,7 +375,7 @@ impl<T: Differentiable + Copy> Div<Expression<T>> for f32 {
     }
 }
 
-impl<T: Differentiable + Copy> Expression<T> {
+impl<T: Differentiable> Expression<T> {
     pub fn pow(self, order: f32) -> Expression<PowOp<T>> {
         Expression {
             expr: PowOp {
