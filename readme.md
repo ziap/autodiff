@@ -12,20 +12,14 @@ Single variable automatic differentiation in Rust, with support for:
 
 ## Usage
 
-Create a variable (or an identity function $f(x) = x$)
-
-```rust
-use diff::Var;
-
-let x = Var::get();
-```
-
-Use operators and methods to compose functions
+Create a function with operators and methods
 
 For example: $f(x) = \frac{x^3}{2} + \sin{2x}$
 
 ```rust
-let f = x.pow(3.0) / 2.0 + (2.0 * x).sin();
+use autodiff::X;
+
+let f = X.pow(3.0) / 2.0 + (2.0 * X).sin();
 ```
 
 Compute the value of the function and **its derivative**
@@ -33,7 +27,7 @@ Compute the value of the function and **its derivative**
 For example: $f(3)$ and $f'(3)$
 
 ```rust
-use diff::Fn; // Import the Fn trait to use .eval()
+use autodiff::Fn; // Import the Fn trait to use .eval()
 
 let (value, derivative) = f.eval(3.0);
 
@@ -46,7 +40,7 @@ Do cool things with the derivative like finding the local minima/maxima
 For example: $f(x) = \frac{4x^4}{5} - \frac{3x^3}{2} - x^2 + 2x + \frac{5}{2}$
 
 ```rust
-let f = 0.8 * x.pow(4.0) - 1.5 * x.pow(3.0) - x.pow(2.0) + 2.0 * x + 2.5;
+let f = 0.8 * X.pow(4.0) - 1.5 * X.pow(3.0) - X.pow(2.0) + 2.0 * X + 2.5;
 
 let mut input = 0.0;
 
