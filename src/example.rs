@@ -1,18 +1,25 @@
 mod autodiff;
-use autodiff::{Differentiable, Var};
+use autodiff::{Fn, Var};
 
 fn main() {
     let x = Var::get();
 
     {
         println!("Basic derivative calculation");
-        println!("f(x)  = x^3 / 2 + sin(2x)");
+        println!("f(x) = x^3 / 2 + sin(2x)");
+        println!("g(x) = 3x + 5");
+        println!("h(x) = f(g(x))");
+
+        println!();
+
         let f = x.pow(3.0) / 2.0 + (2.0 * x).sin();
+        let g = x / 3.0 - 5.0;
+        let h = f.compose(g);
 
-        let (value, derivative) = f.eval(3.0);
+        let (value, derivative) = h.eval(25.0);
 
-        println!("f(3)  = {value}");
-        println!("f'(3) = {derivative}");
+        println!("h(25)  = {value}");
+        println!("h'(25) = {derivative}");
     }
 
     println!();
@@ -25,7 +32,7 @@ fn main() {
         let mut input = 0.0;
 
         for _ in 0..100 {
-            let cost = (f_x - g_x) * (f_x - g_x);
+            let cost = (f_x - g_x).pow(2.0);
 
             let (_, derivative) = cost.eval(input);
 
