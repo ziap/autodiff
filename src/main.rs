@@ -1,9 +1,6 @@
-mod autodiff;
-use autodiff::{Fn, Var};
+use autodiff::{Fn, X};
 
 fn main() {
-    let x = Var::get();
-
     {
         println!("Basic derivative calculation");
         println!("f(x) = x^3 / 2 + sin(2x)");
@@ -12,8 +9,8 @@ fn main() {
 
         println!();
 
-        let f = x.pow(3.0) / 2.0 + (2.0 * x).sin();
-        let g = x / 3.0 - 5.0;
+        let f = X.pow(3.0) / 2.0 + (2.0 * X).sin();
+        let g = X / 3.0 - 5.0;
         let h = f.compose(g);
 
         let (value, derivative) = h.eval(25.0);
@@ -26,8 +23,8 @@ fn main() {
 
     {
         println!("Solving for x^2 = 2^x");
-        let f_x = x.pow(2.0);
-        let g_x = (x * f32::ln(2.0)).exp();
+        let f_x = X.pow(2.0);
+        let g_x = (X * f32::ln(2.0)).exp();
 
         let mut input = 0.0;
 
@@ -50,7 +47,7 @@ fn main() {
 
     {
         println!("Find the max of sin(x) + cos(x)");
-        let f_x = x.sin() + x.cos();
+        let f_x = X.sin() + X.cos();
         let mut input = 0.0;
 
         for _ in 0..100 {

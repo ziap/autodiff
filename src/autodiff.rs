@@ -18,7 +18,7 @@ impl Fn for Var {
 /// Constants
 #[derive(Clone, Copy)]
 pub struct Const {
-    value: f32
+    value: f32,
 }
 
 impl Fn for Const {
@@ -32,7 +32,7 @@ impl Fn for Const {
 #[derive(Clone, Copy)]
 pub struct AddOp<T1: Fn, T2: Fn> {
     lhs: T1,
-    rhs: T2
+    rhs: T2,
 }
 
 impl<T1: Fn, T2: Fn> Fn for AddOp<T1, T2> {
@@ -49,7 +49,7 @@ impl<T1: Fn, T2: Fn> Fn for AddOp<T1, T2> {
 #[derive(Clone, Copy)]
 pub struct SubOp<T1: Fn, T2: Fn> {
     lhs: T1,
-    rhs: T2
+    rhs: T2,
 }
 
 impl<T1: Fn, T2: Fn> Fn for SubOp<T1, T2> {
@@ -64,7 +64,7 @@ impl<T1: Fn, T2: Fn> Fn for SubOp<T1, T2> {
 /// Negating an expression
 #[derive(Clone, Copy)]
 pub struct NegOp<T: Fn> {
-    expr: T
+    expr: T,
 }
 
 impl<T: Fn> Fn for NegOp<T> {
@@ -79,7 +79,7 @@ impl<T: Fn> Fn for NegOp<T> {
 #[derive(Clone, Copy)]
 pub struct MulOp<T1: Fn, T2: Fn> {
     lhs: T1,
-    rhs: T2
+    rhs: T2,
 }
 
 impl<T1: Fn, T2: Fn> Fn for MulOp<T1, T2> {
@@ -96,7 +96,7 @@ impl<T1: Fn, T2: Fn> Fn for MulOp<T1, T2> {
 #[derive(Clone, Copy)]
 pub struct DivOp<T1: Fn, T2: Fn> {
     lhs: T1,
-    rhs: T2
+    rhs: T2,
 }
 
 impl<T1: Fn, T2: Fn> Fn for DivOp<T1, T2> {
@@ -113,22 +113,25 @@ impl<T1: Fn, T2: Fn> Fn for DivOp<T1, T2> {
 #[derive(Clone, Copy)]
 pub struct PowOp<T: Fn> {
     expr: T,
-    order: f32
+    order: f32,
 }
 
 impl<T: Fn> Fn for PowOp<T> {
     // f(x) = u^n, f'(x) = u'nu^(n - 1)
     fn eval(self, input: f32) -> (f32, f32) {
         let (y, dy) = self.expr.eval(input);
-        
-        (y.powf(self.order), dy * self.order * y.powf(self.order - 1.0))
+
+        (
+            y.powf(self.order),
+            dy * self.order * y.powf(self.order - 1.0),
+        )
     }
 }
 
 // Exponentation
 #[derive(Clone, Copy)]
 pub struct ExpOp<T: Fn> {
-    expr: T
+    expr: T,
 }
 
 impl<T: Fn> Fn for ExpOp<T> {
@@ -144,7 +147,7 @@ impl<T: Fn> Fn for ExpOp<T> {
 // Trigonometry
 #[derive(Clone, Copy)]
 pub struct SinOp<T: Fn> {
-    expr: T
+    expr: T,
 }
 
 impl<T: Fn> Fn for SinOp<T> {
@@ -159,7 +162,7 @@ impl<T: Fn> Fn for SinOp<T> {
 
 #[derive(Clone, Copy)]
 pub struct CosOp<T: Fn> {
-    expr: T
+    expr: T,
 }
 
 impl<T: Fn> Fn for CosOp<T> {
@@ -176,7 +179,7 @@ impl<T: Fn> Fn for CosOp<T> {
 
 #[derive(Clone, Copy)]
 pub struct AtanOp<T: Fn> {
-    expr: T
+    expr: T,
 }
 
 impl<T: Fn> Fn for AtanOp<T> {
@@ -191,7 +194,7 @@ impl<T: Fn> Fn for AtanOp<T> {
 // Logarithm
 #[derive(Clone, Copy)]
 pub struct LnOp<T: Fn> {
-    expr: T
+    expr: T,
 }
 
 impl<T: Fn> Fn for LnOp<T> {
@@ -206,7 +209,7 @@ impl<T: Fn> Fn for LnOp<T> {
 // Composition of 2 functions
 pub struct ComposeOp<T1: Fn, T2: Fn> {
     lhs: T1,
-    rhs: T2
+    rhs: T2,
 }
 
 impl<T1: Fn, T2: Fn> Fn for ComposeOp<T1, T2> {
@@ -222,7 +225,7 @@ impl<T1: Fn, T2: Fn> Fn for ComposeOp<T1, T2> {
 /// The generic expression struct
 #[derive(Clone, Copy)]
 pub struct Expr<T> {
-    expr: T
+    expr: T,
 }
 
 impl<T: Fn> Fn for Expr<T> {
@@ -240,8 +243,8 @@ impl<T1: Fn, T2: Fn> Add<Expr<T2>> for Expr<T1> {
         Self::Output {
             expr: AddOp {
                 lhs: self.expr,
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -253,8 +256,8 @@ impl<T: Fn> Add<f32> for Expr<T> {
         Self::Output {
             expr: AddOp {
                 lhs: self.expr,
-                rhs: Const { value: rhs }
-            }
+                rhs: Const { value: rhs },
+            },
         }
     }
 }
@@ -266,8 +269,8 @@ impl<T: Fn> Add<Expr<T>> for f32 {
         Self::Output {
             expr: AddOp {
                 lhs: Const { value: self },
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -281,8 +284,8 @@ impl<T1: Fn, T2: Fn> Mul<Expr<T2>> for Expr<T1> {
         Self::Output {
             expr: MulOp {
                 lhs: self.expr,
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -294,8 +297,8 @@ impl<T: Fn> Mul<f32> for Expr<T> {
         Self::Output {
             expr: MulOp {
                 lhs: self.expr,
-                rhs: Const { value: rhs }
-            }
+                rhs: Const { value: rhs },
+            },
         }
     }
 }
@@ -307,8 +310,8 @@ impl<T: Fn> Mul<Expr<T>> for f32 {
         Self::Output {
             expr: MulOp {
                 lhs: Const { value: self },
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -322,8 +325,8 @@ impl<T1: Fn, T2: Fn> Sub<Expr<T2>> for Expr<T1> {
         Self::Output {
             expr: SubOp {
                 lhs: self.expr,
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -335,8 +338,8 @@ impl<T: Fn> Sub<f32> for Expr<T> {
         Self::Output {
             expr: SubOp {
                 lhs: self.expr,
-                rhs: Const { value: rhs }
-            }
+                rhs: Const { value: rhs },
+            },
         }
     }
 }
@@ -348,8 +351,8 @@ impl<T: Fn> Sub<Expr<T>> for f32 {
         Self::Output {
             expr: SubOp {
                 lhs: Const { value: self },
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -361,7 +364,7 @@ impl<T: Fn> Neg for Expr<T> {
 
     fn neg(self) -> Self::Output {
         Self::Output {
-            expr: NegOp { expr: self.expr }
+            expr: NegOp { expr: self.expr },
         }
     }
 }
@@ -375,8 +378,8 @@ impl<T1: Fn, T2: Fn> Div<Expr<T2>> for Expr<T1> {
         Self::Output {
             expr: DivOp {
                 lhs: self.expr,
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -388,8 +391,8 @@ impl<T: Fn> Div<f32> for Expr<T> {
         Self::Output {
             expr: DivOp {
                 lhs: self.expr,
-                rhs: Const { value: rhs }
-            }
+                rhs: Const { value: rhs },
+            },
         }
     }
 }
@@ -401,8 +404,8 @@ impl<T: Fn> Div<Expr<T>> for f32 {
         Self::Output {
             expr: DivOp {
                 lhs: Const { value: self },
-                rhs: rhs.expr
-            }
+                rhs: rhs.expr,
+            },
         }
     }
 }
@@ -412,8 +415,8 @@ impl<T: Fn> Expr<T> {
         Expr {
             expr: PowOp {
                 expr: self.expr,
-                order
-            }
+                order,
+            },
         }
     }
 
@@ -421,38 +424,38 @@ impl<T: Fn> Expr<T> {
         Expr {
             expr: PowOp {
                 expr: self.expr,
-                order: 0.5
-            }
+                order: 0.5,
+            },
         }
     }
 
     pub fn exp(self) -> Expr<ExpOp<T>> {
         Expr {
-            expr: ExpOp { expr: self.expr }
+            expr: ExpOp { expr: self.expr },
         }
     }
 
     pub fn sin(self) -> Expr<SinOp<T>> {
         Expr {
-            expr: SinOp { expr: self.expr }
+            expr: SinOp { expr: self.expr },
         }
     }
 
     pub fn cos(self) -> Expr<CosOp<T>> {
         Expr {
-            expr: CosOp { expr: self.expr }
+            expr: CosOp { expr: self.expr },
         }
     }
 
     pub fn atan(self) -> Expr<AtanOp<T>> {
         Expr {
-            expr: AtanOp { expr: self.expr }
+            expr: AtanOp { expr: self.expr },
         }
     }
 
     pub fn ln(self) -> Expr<LnOp<T>> {
         Expr {
-            expr: LnOp { expr: self.expr }
+            expr: LnOp { expr: self.expr },
         }
     }
 
@@ -460,14 +463,11 @@ impl<T: Fn> Expr<T> {
         Expr {
             expr: ComposeOp {
                 lhs: self.expr,
-                rhs: other.expr
-            }
+                rhs: other.expr,
+            },
         }
     }
 }
 
-impl Var {
-    pub fn get() -> Expr<Var> {
-        Expr { expr: Var {} }
-    }
-}
+/// The identity function f(x) = x
+pub const X: Expr<Var> = Expr { expr: Var {} };
